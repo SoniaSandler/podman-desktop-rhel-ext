@@ -17,7 +17,11 @@
 
 name: pr-check
 
-on: [pull_request]
+on:
+  pull_request
+  push:
+    branches:
+      - 'test-workflows'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
