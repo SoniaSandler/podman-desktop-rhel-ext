@@ -27,6 +27,7 @@ on:
   #       description: 'Branch to use for the release'
   #       required: true
   #       default: main
+  #
   pull_request:
     types: [labeled]
 env:
@@ -43,7 +44,7 @@ jobs:
       - name: Generate tag utilities
         id: TAG_UTIL
         run: |
-            TAG_PATTERN=0.0.1
+            TAG_PATTERN=0.0.2
             echo "githubTag=v$TAG_PATTERN" >> ${GITHUB_OUTPUT}
             echo "RHELExtensionVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
 
@@ -74,7 +75,7 @@ jobs:
           prerelease: true
 
       - name: Create the PR to bump the version in the main branch (only if we're tagging from main branch)
-        if: ${{ github.event.inputs.branch == 'main' }}
+    #    if: ${{ github.event.inputs.branch == 'main' }}
         run: |
           git config --local user.name ${{ github.actor }}
           git config --local user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
@@ -89,7 +90,7 @@ jobs:
           git commit -s --amend -m "chore: bump version to ${bumpedVersion}"
           git push origin "${bumpedBranchName}"
           echo -e "📢 Bump version to ${bumpedVersion}\n\n${{ steps.TAG_UTIL.outputs.RHELExtensionVersion }} has been released.\n\n Time to switch to the new ${bumpedVersion} version 🥳" > /tmp/pr-title
-          pullRequestUrl=$(gh pr create --title "chore: 📢 Bump version to ${bumpedVersion}" --body-file /tmp/pr-title --head "${bumpedBranchName}" --base "main")
+          pullRequestUrl=$(gh pr create --title "chore: 📢 Bump version to ${bumpedVersion}" --body-file /tmp/pr-title --head "${bumpedBranchName}" --base "test-workflows-3")
           echo "📢 Pull request created: ${pullRequestUrl}"
           echo "➡️ Flag the PR as being ready for review"
           gh pr ready "${pullRequestUrl}"
