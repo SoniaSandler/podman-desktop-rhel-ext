@@ -44,7 +44,7 @@ jobs:
       - name: Generate tag utilities
         id: TAG_UTIL
         run: |
-            TAG_PATTERN=0.0.2
+            TAG_PATTERN=0.0.3
             echo "githubTag=v$TAG_PATTERN" >> ${GITHUB_OUTPUT}
             echo "RHELExtensionVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
 
@@ -98,7 +98,7 @@ jobs:
           gh pr merge "${pullRequestUrl}" --auto --rebase
           sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${CURRENT_VERSION}\",#g" package.json
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PODMAN_DESKTOP_BOT_TOKEN }}
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
