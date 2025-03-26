@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: test-workflows-2
+          ref: test-workflows-3
 
       - name: Generate tag utilities
         id: TAG_UTIL
