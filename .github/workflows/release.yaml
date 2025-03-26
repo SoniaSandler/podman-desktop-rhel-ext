@@ -27,6 +27,7 @@ on:
   #       description: 'Branch to use for the release'
   #       required: true
   #       default: main
+  #
   pull_request:
     types: [labeled]
 env:
