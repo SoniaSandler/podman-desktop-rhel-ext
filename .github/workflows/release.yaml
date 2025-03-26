@@ -18,15 +18,17 @@
 name: release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to release'
-        required: true
-      branch:
-        description: 'Branch to use for the release'
-        required: true
-        default: main
+  # workflow_dispatch:
+  #   inputs:
+  #     version:
+  #       description: 'Version to release'
+  #       required: true
+  #     branch:
+  #       description: 'Branch to use for the release'
+  #       required: true
+  #       default: main
+  pull_request:
+    types: [labeled]
 env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
@@ -36,12 +38,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: test-workflows-2
 
       - name: Generate tag utilities
         id: TAG_UTIL
         run: |
-            TAG_PATTERN=${{ github.event.inputs.version }}
+            TAG_PATTERN=0.0.1
             echo "githubTag=v$TAG_PATTERN" >> ${GITHUB_OUTPUT}
             echo "RHELExtensionVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
 
