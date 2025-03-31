@@ -44,7 +44,7 @@ jobs:
       - name: Generate tag utilities
         id: TAG_UTIL
         run: |
-            TAG_PATTERN=0.2.3
+            TAG_PATTERN=0.2.4
             echo "githubTag=v$TAG_PATTERN" >> ${GITHUB_OUTPUT}
             echo "RHELExtensionVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
 
