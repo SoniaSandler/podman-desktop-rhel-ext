@@ -18,10 +18,9 @@
 name: release
 
 permissions:
-  contents: read
+  contents: write
   packages: write
   pull-requests: write
-  repository-projects: write
 
 
 on:
