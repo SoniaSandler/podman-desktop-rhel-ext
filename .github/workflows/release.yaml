@@ -18,11 +18,14 @@
 name: release
 
 permissions:
-  contents: read
+  contents: write
   packages: write
+  pull-requests: write
 
 
 on:
+  pull_request:
+    types: [labeled]
   workflow_dispatch:
     inputs:
       version:
@@ -36,17 +39,21 @@ env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
 jobs:
-  tag-version:
+  tag:
     runs-on: ubuntu-24.04
+    outputs:
+      githubTag: ${{ steps.TAG_UTIL.outputs.githubTag}}
+      RHELExtensionVersion: ${{ steps.TAG_UTIL.outputs.RHELExtensionVersion}}
+      
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: workflows-containerfiles-test2
 
       - name: Generate tag utilities
         id: TAG_UTIL
         run: |
-            TAG_PATTERN=${{ github.event.inputs.version }}
+            TAG_PATTERN=0.1.1
             echo "githubTag=v$TAG_PATTERN" >> ${GITHUB_OUTPUT}
             echo "RHELExtensionVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
 
@@ -77,7 +84,7 @@ jobs:
           prerelease: true
 
       - name: Create the PR to bump the version in the main branch (only if we're tagging from main branch)
-        if: ${{ github.event.inputs.branch == 'main' }}
+      #  if: ${{ github.event.inputs.branch == 'main' }}
         run: |
           git config --local user.name ${{ github.actor }}
           git config --local user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
@@ -92,7 +99,7 @@ jobs:
           git commit -s --amend -m "chore: bump version to ${bumpedVersion}"
           git push origin "${bumpedBranchName}"
           echo -e "📢 Bump version to ${bumpedVersion}\n\n${{ steps.TAG_UTIL.outputs.RHELExtensionVersion }} has been released.\n\n Time to switch to the new ${bumpedVersion} version 🥳" > /tmp/pr-title
-          pullRequestUrl=$(gh pr create --title "chore: 📢 Bump version to ${bumpedVersion}" --body-file /tmp/pr-title --head "${bumpedBranchName}" --base "main")
+          pullRequestUrl=$(gh pr create --title "chore: 📢 Bump version to ${bumpedVersion}" --body-file /tmp/pr-title --head "${bumpedBranchName}" --base "workflows-containerfiles-test2")
           echo "📢 Pull request created: ${pullRequestUrl}"
           echo "➡️ Flag the PR as being ready for review"
           gh pr ready "${pullRequestUrl}"
@@ -104,7 +111,7 @@ jobs:
   
   builder-image:
     name: Build and publish builder OCI image
-    needs: tag-version
+    needs: tag
     runs-on: ubuntu-24.04
 
     steps:
@@ -116,6 +123,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
+      
+      - name: check version
+        run: |
+            echo ${{ needs.tag.outputs.RHELExtensionVersion }}
 
       - name: build builder image
         id: builder-image
@@ -142,12 +153,12 @@ jobs:
         with:
           image: ${{ steps.builder-image.outputs.image }}
           tags: ${{ steps.builder-image.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
+          registry: ghcr.io/soniasandler
 
   extension-image:
     name: Build and publish extension OCI image
     runs-on: ubuntu-24.04
-    needs: [builder-image, tag-version]
+    needs: [builder-image, tag]
 
     steps:
       - uses: actions/checkout@v4
@@ -182,4 +193,4 @@ jobs:
         with:
           image: ${{ steps.extension-image.outputs.image }}
           tags: ${{ steps.extension-image.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
+          registry: ghcr.io/soniasandler
