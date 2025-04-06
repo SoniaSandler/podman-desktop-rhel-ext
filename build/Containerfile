@@ -15,7 +15,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM ghcr.io/redhat-developer/podman-desktop-rhel-ext-builder:next AS builder
+FROM ghcr.io/soniasandler/podman-desktop-rhel-ext-builder:next AS builder
 
 COPY . .
 
