@@ -18,6 +18,7 @@
 FROM registry.access.redhat.com/ubi9/nodejs-22
 
 COPY package.json .
+COPY pnpm-lock.yaml .
 
 RUN npm i -g ssh2@1.16.0 && \
     npm install --global pnpm@10 && \
