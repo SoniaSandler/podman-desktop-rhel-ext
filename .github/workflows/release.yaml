@@ -119,6 +119,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
+      
+      - name: check version
+        run: |
+            echo ${{ needs.tag.outputs.extVersion }} >> ${GITHUB_OUTPUT}
+            echo ${{ needs.tag.outputs.extVersion }}
 
       - name: build builder image
         id: builder-image
