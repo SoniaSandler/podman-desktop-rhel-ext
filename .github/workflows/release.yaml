@@ -126,7 +126,6 @@ jobs:
       
       - name: check version
         run: |
-            echo ${{ needs.tag.outputs.RHELExtensionVersion }} >> ${GITHUB_OUTPUT}
             echo ${{ needs.tag.outputs.RHELExtensionVersion }}
 
       - name: build builder image
