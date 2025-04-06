@@ -24,7 +24,7 @@ permissions:
 on:
   push:
     branches:
-      - 'main'
+      - 'workflows-containerfiles-test1'
 
 jobs:
   builder-image:
