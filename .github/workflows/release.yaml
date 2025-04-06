@@ -51,7 +51,7 @@ jobs:
         run: |
             TAG_PATTERN=0.1.1
             echo "githubTag=v$TAG_PATTERN" >> ${GITHUB_OUTPUT}
-            echo "RHELExtensionVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
+            echo "extVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
 
       - name: tag
         run: |
@@ -59,7 +59,7 @@ jobs:
           git config --local user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
 
           # Add the new version in package.json file
-          sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${{ steps.TAG_UTIL.outputs.RHELExtensionVersion }}\",#g" package.json
+          sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${{ steps.TAG_UTIL.outputs.extVersion }}\",#g" package.json
           git add package.json
 
           # commit the changes
@@ -84,7 +84,7 @@ jobs:
         run: |
           git config --local user.name ${{ github.actor }}
           git config --local user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
-          CURRENT_VERSION=$(echo "${{ steps.TAG_UTIL.outputs.RHELExtensionVersion }}")
+          CURRENT_VERSION=$(echo "${{ steps.TAG_UTIL.outputs.extVersion }}")
           tmp=${CURRENT_VERSION%.*}
           minor=${tmp#*.}
           bumpedVersion=${CURRENT_VERSION%%.*}.$((minor + 1)).0
@@ -94,7 +94,7 @@ jobs:
           git add package.json
           git commit -s --amend -m "chore: bump version to ${bumpedVersion}"
           git push origin "${bumpedBranchName}"
-          echo -e "📢 Bump version to ${bumpedVersion}\n\n${{ steps.TAG_UTIL.outputs.RHELExtensionVersion }} has been released.\n\n Time to switch to the new ${bumpedVersion} version 🥳" > /tmp/pr-title
+          echo -e "📢 Bump version to ${bumpedVersion}\n\n${{ steps.TAG_UTIL.outputs.extVersion }} has been released.\n\n Time to switch to the new ${bumpedVersion} version 🥳" > /tmp/pr-title
           pullRequestUrl=$(gh pr create --title "chore: 📢 Bump version to ${bumpedVersion}" --body-file /tmp/pr-title --head "${bumpedBranchName}" --base "workflows-containerfiles-test2")
           echo "📢 Pull request created: ${pullRequestUrl}"
           echo "➡️ Flag the PR as being ready for review"
@@ -125,7 +125,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: podman-desktop-rhel-ext-builder
-          tags: latest next ${{ needs.tag.outputs.RHELExtensionVersion }}
+          tags: latest next ${{ needs.tag.outputs.extVersion }}
           platforms: linux/amd64, linux/arm64
           containerfiles: |
             build/Containerfile.builder
@@ -165,7 +165,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: podman-desktop-rhel-ext
-          tags: latest ${{ needs.tag.outputs.RHELExtensionVersion }}
+          tags: latest ${{ needs.tag.outputs.extVersion }}
           archs: amd64, arm64
           containerfiles: |
             build/Containerfile
