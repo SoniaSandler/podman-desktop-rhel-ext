@@ -24,7 +24,7 @@ permissions:
 on:
   push:
     branches:
-      - 'main'
+      - 'workflows-test-build-main'
 
 jobs:
   builder-image:
@@ -44,7 +44,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: podman-desktop-rhel-ext-builder
-          tags: next ${{ github.sha }}
+          tags: next ${{ github.sha }} next-test
           platforms: linux/amd64, linux/arm64
           containerfiles: |
             build/Containerfile.builder
@@ -64,7 +64,7 @@ jobs:
         with:
           image: ${{ steps.builder-image.outputs.image }}
           tags: ${{ steps.builder-image.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
+          registry: ghcr.io/soniasandler
   
   extension-image:
     name: Build and publish extension OCI image
@@ -84,7 +84,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: podman-desktop-rhel-ext
-          tags: next ${{ github.sha }}
+          tags: next ${{ github.sha }} next-test
           archs: amd64, arm64
           containerfiles: |
             build/Containerfile
@@ -104,4 +104,4 @@ jobs:
         with:
           image: ${{ steps.extension-image.outputs.image }}
           tags: ${{ steps.extension-image.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
+          registry: ghcr.io/soniasandler
