@@ -19,6 +19,9 @@ FROM ghcr.io/soniasandler/podman-desktop-rhel-ext-builder:next AS builder
 
 COPY . .
 
+RUN pwd && \
+    ls
+
 RUN pnpm --frozen-lockfile install && \
     pnpm build
 
@@ -36,6 +39,5 @@ LABEL org.opencontainers.image.title="RHEL extension" \
 
 
 COPY --from=builder /extension /extension
-RUN pwd && \
-    ls
-COPY --from=builder /dist /extension
+
+COPY --from=builder /opt/app-root/src/dist /extension
