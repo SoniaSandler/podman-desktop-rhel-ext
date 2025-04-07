@@ -42,4 +42,4 @@ COPY --from=builder /extension /extension
 
 COPY --from=builder /opt/app-root/src/dist /extension/dist
 COPY --from=builder /opt/app-root/src/node_modules/ssh2/ /extension/node_modules/ssh2
-COPY --from=builder /opt/app-root/src/node_modules/.pnpm/asn1@0.2.6 /extension/node_modules/.pnpm/asn1@0.2.6
+COPY --from=builder /opt/app-root/src/node_modules/.pnpm/asn1@0.2.6 /extension/node_modules/asn1@0.2.6

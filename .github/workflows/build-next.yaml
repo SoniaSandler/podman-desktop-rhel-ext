@@ -27,49 +27,49 @@ on:
       - 'workflows-test-build-main'
 
 jobs:
-  # builder-image:
-  #   name: Build and publish builder OCI image
-  #   runs-on: ubuntu-24.04
+  builder-image:
+    name: Build and publish builder OCI image
+    runs-on: ubuntu-24.04
 
-  #   steps:
-  #     - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Install qemu dependency
-  #       run: |
-  #         sudo apt-get update
-  #         sudo apt-get install -y qemu-user-static
+      - name: Install qemu dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
 
-  #     - name: build builder image
-  #       id: builder-image
-  #       uses: redhat-actions/buildah-build@v2
-  #       with:
-  #         image: podman-desktop-rhel-ext-builder
-  #         tags: next ${{ github.sha }} next-test
-  #         platforms: linux/amd64, linux/arm64
-  #         containerfiles: |
-  #           build/Containerfile.builder
-  #         context: .
-  #         oci: true
+      - name: build builder image
+        id: builder-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: podman-desktop-rhel-ext-builder
+          tags: next ${{ github.sha }} next-test
+          platforms: linux/amd64, linux/arm64
+          containerfiles: |
+            build/Containerfile.builder
+          context: .
+          oci: true
 
-  #     - name: Log in to ghcr.io
-  #       uses: redhat-actions/podman-login@v1
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.repository_owner }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to ghcr.io
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: publish builder to ghcr.io
-  #       id: push-to-ghcr
-  #       uses: redhat-actions/push-to-registry@v2
-  #       with:
-  #         image: ${{ steps.builder-image.outputs.image }}
-  #         tags: ${{ steps.builder-image.outputs.tags }}
-  #         registry: ghcr.io/soniasandler
+      - name: publish builder to ghcr.io
+        id: push-to-ghcr
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.builder-image.outputs.image }}
+          tags: ${{ steps.builder-image.outputs.tags }}
+          registry: ghcr.io/soniasandler
   
   extension-image:
     name: Build and publish extension OCI image
     runs-on: ubuntu-24.04
-  #  needs: builder-image
+    needs: builder-image
 
     steps:
       - uses: actions/checkout@v4
