@@ -33,4 +33,4 @@ COPY package.json /extension/
 COPY LICENSE /extension/
 COPY icon.png /extension/
 COPY README.md /extension/
-COPY --from=builder /opt/app-root/src/dist /extension/
+COPY --from=builder /opt/app-root/src/dist /extension/dist
