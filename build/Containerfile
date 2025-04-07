@@ -19,7 +19,8 @@ FROM ghcr.io/soniasandler/podman-desktop-rhel-ext-builder:next AS builder
 
 COPY . .
 
-RUN pnpm --frozen-lockfile install && \
+RUN npm i -g ssh2@1.16.0 &&\
+    pnpm --frozen-lockfile install && \
     pnpm build
 
 COPY package.json /extension/
