@@ -22,6 +22,12 @@ COPY . .
 RUN pnpm --frozen-lockfile install && \
     pnpm build
 
+COPY package.json /extension/
+COPY LICENSE /extension/
+COPY icon.png /extension/
+COPY README.md /extension/
+COPY dist/ /extension/dist
+
 FROM scratch
 
 LABEL org.opencontainers.image.title="RHEL extension" \
@@ -29,8 +35,5 @@ LABEL org.opencontainers.image.title="RHEL extension" \
       org.opencontainers.image.vendor="podman-desktop" \
       io.podman-desktop.api.version=">= 1.17.0"
 
-COPY package.json /extension/
-COPY LICENSE /extension/
-COPY icon.png /extension/
-COPY README.md /extension/
-COPY --from=builder dist/ /extension/dist
+
+COPY --from=builder /extension /extension
