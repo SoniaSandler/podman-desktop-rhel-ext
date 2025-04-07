@@ -33,5 +33,4 @@ COPY package.json /extension/
 COPY LICENSE /extension/
 COPY icon.png /extension/
 COPY README.md /extension/
-COPY --from=builder /opt/app-root/src/dist /extension/dist
-COPY --from=builder /opt/app-root/src/node_modules/ssh2/ /extension/node_modules/ssh2
+COPY --from=builder dist/ /extension/dist
