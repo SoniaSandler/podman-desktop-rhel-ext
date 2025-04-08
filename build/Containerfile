@@ -19,7 +19,7 @@ FROM ghcr.io/soniasandler/podman-desktop-rhel-ext-builder:next AS builder
 
 COPY . .
 
-RUN pnpm --frozen-lockfile install && \
+RUN pnpm install && \
     pnpm build
 
 RUN pnpm --dir /opt/app-root/src/dist add ssh2
