@@ -22,11 +22,7 @@ COPY . .
 RUN pnpm --frozen-lockfile install && \
     pnpm build
 
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-
-RUN pnpm config set global-dir /opt/app-root/src/dist
-RUN pnpm -g add ssh2
+RUN pnpm ---dir /opt/app-root/src/dist add ssh2
 
 FROM scratch
 
