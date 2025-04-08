@@ -22,8 +22,8 @@ COPY . .
 RUN pnpm --frozen-lockfile install && \
     pnpm build
 
-WORKDIR /opt/app-root/src/dist
-RUN pnpm add ssh2
+RUN pnpm config set global-dir /opt/app-root/src/dist
+RUN pnpm -g add ssh2
 
 FROM scratch
 
