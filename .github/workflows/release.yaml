@@ -23,7 +23,7 @@ permissions:
   pull-requests: write
 
 on:
-  pull_request:
+pull_request:
     types: [labeled]
   workflow_dispatch:
     inputs:
@@ -122,6 +122,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
+
+      - name: add macadam package authentication
+        run: |
+          echo @crc-org:registry=https://npm.pkg.github.com >> ./.npmrc
+          echo //npm.pkg.github.com/:_authToken=${{secrets.GITHUB_TOKEN}} >> ./.npmrc
 
       - name: build builder image
         id: builder-image
