@@ -23,6 +23,8 @@ permissions:
   pull-requests: write
 
 on:
+  pull_request:
+    types: [labeled]
   workflow_dispatch:
     inputs:
       version:
@@ -121,6 +123,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
 
+      - name: add macadam package authentication
+        run: |
+          echo @crc-org:registry=https://npm.pkg.github.com >> ./.npmrc
+          echo //npm.pkg.github.com/:_authToken=${{secrets.GITHUB_TOKEN}} >> ./.npmrc
+
       - name: build builder image
         id: builder-image
         uses: redhat-actions/buildah-build@v2
@@ -146,7 +153,7 @@ jobs:
         with:
           image: ${{ steps.builder-image.outputs.image }}
           tags: ${{ steps.builder-image.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
+          registry: ghcr.io/soniasandler
 
   extension-image:
     name: Build and publish extension OCI image
@@ -160,6 +167,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
+
+      - name: add macadam package authentication
+        run: |
+          echo @crc-org:registry=https://npm.pkg.github.com >> ./.npmrc
+          echo //npm.pkg.github.com/:_authToken=${{secrets.GITHUB_TOKEN}} >> ./.npmrc
 
       - name: build extension image
         id: extension-image
@@ -186,4 +198,4 @@ jobs:
         with:
           image: ${{ steps.extension-image.outputs.image }}
           tags: ${{ steps.extension-image.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
+          registry: ghcr.io/soniasandler
