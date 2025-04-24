@@ -24,7 +24,6 @@ RUN pnpm --frozen-lockfile install && \
 
 RUN echo "node-linker=hoisted" >> /opt/app-root/src/dist/.npmrc
 RUN pnpm --dir /opt/app-root/src/dist add ssh2
-RUN pnpm --dir /opt/app-root/src/dist add @crc-org/macadam.js
 
 FROM scratch
 
