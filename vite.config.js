@@ -49,6 +49,7 @@ const config = {
       external: [
         '@podman-desktop/api',
         'ssh2',
+        '@crc-org/macadam.js',
         ...builtinModules.flatMap(p => [p, `node:${p}`]),
       ],
       output: {
