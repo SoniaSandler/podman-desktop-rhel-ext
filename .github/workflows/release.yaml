@@ -23,6 +23,8 @@ permissions:
   pull-requests: write
 
 on:
+  pull_request:
+    types: [labeled]
   workflow_dispatch:
     inputs:
       version:
@@ -45,12 +47,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: workflows-test-release
 
       - name: Generate tag utilities
         id: TAG_UTIL
         run: |
-            TAG_PATTERN=${{ github.event.inputs.version }}
+            TAG_PATTERN=0.2.5
             echo "githubTag=v$TAG_PATTERN" >> ${GITHUB_OUTPUT}
             echo "RHELExtensionVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
 
@@ -81,7 +83,7 @@ jobs:
           prerelease: true
 
       - name: Create the PR to bump the version in the main branch (only if we're tagging from main branch)
-        if: ${{ github.event.inputs.branch == 'main' }}
+       # if: ${{ github.event.inputs.branch == 'main' }}
         run: |
           git config --local user.name ${{ github.actor }}
           git config --local user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
@@ -96,7 +98,7 @@ jobs:
           git commit -s --amend -m "chore: bump version to ${bumpedVersion}"
           git push origin "${bumpedBranchName}"
           echo -e "📢 Bump version to ${bumpedVersion}\n\n${{ steps.TAG_UTIL.outputs.RHELExtensionVersion }} has been released.\n\n Time to switch to the new ${bumpedVersion} version 🥳" > /tmp/pr-title
-          pullRequestUrl=$(gh pr create --title "chore: 📢 Bump version to ${bumpedVersion}" --body-file /tmp/pr-title --head "${bumpedBranchName}" --base "main")
+          pullRequestUrl=$(gh pr create --title "chore: 📢 Bump version to ${bumpedVersion}" --body-file /tmp/pr-title --head "${bumpedBranchName}" --base "workflows-test-release")
           echo "📢 Pull request created: ${pullRequestUrl}"
           echo "➡️ Flag the PR as being ready for review"
           gh pr ready "${pullRequestUrl}"
@@ -146,7 +148,7 @@ jobs:
         with:
           image: ${{ steps.builder-image.outputs.image }}
           tags: ${{ steps.builder-image.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
+          registry: ghcr.io/soniasandler
 
   extension-image:
     name: Build and publish extension OCI image
@@ -186,4 +188,4 @@ jobs:
         with:
           image: ${{ steps.extension-image.outputs.image }}
           tags: ${{ steps.extension-image.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
+          registry: ghcr.io/soniasandler
