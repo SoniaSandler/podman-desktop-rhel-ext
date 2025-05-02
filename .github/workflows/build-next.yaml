@@ -17,10 +17,6 @@
 
 name: main-build
 
-permissions:
-  contents: write
-  packages: write
-
 on:
   push:
     branches:
