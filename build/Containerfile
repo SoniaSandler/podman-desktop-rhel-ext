@@ -22,6 +22,7 @@ COPY . .
 RUN pnpm --frozen-lockfile install
 RUN pwd
 RUN whoami
+RUN ls -l
 RUN sudo pnpm build
 
 RUN echo "node-linker=hoisted" >> /opt/app-root/src/dist/.npmrc
