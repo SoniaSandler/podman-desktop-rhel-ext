@@ -22,11 +22,10 @@ COPY . .
 RUN pnpm --frozen-lockfile install
 RUN pwd
 RUN whoami
-RUN ls -l src
-RUN pnpm build
+RUN ls -l ../
+RUN sudo pnpm build
 
 RUN echo "node-linker=hoisted" >> /opt/app-root/src/dist/.npmrc
-RUN ls -l /opt/app-root/src/dist
 RUN eval 'dep_version() { pnpm list -P $1 --json --depth 0 |jq -r ".[0].dependencies.\"$1\".version"; };' && \
         MACADAM_VERSION=$(dep_version "@crc-org/macadam.js") && \
         SSH2_VERSION=$(dep_version "ssh2") && \
