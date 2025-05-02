@@ -17,6 +17,10 @@
 
 name: main-build
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches:
