@@ -75,7 +75,7 @@ jobs:
   extension-image:
     name: Build and publish extension OCI image
     runs-on: ubuntu-24.04
-    needs: builder-image
+    # needs: builder-image
 
     steps:
       - uses: actions/checkout@v4
