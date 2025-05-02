@@ -18,13 +18,14 @@
 name: main-build
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 on:
   push:
     branches:
       - 'main'
+      - 'fix-buildnext'
 
 jobs:
   builder-image:
@@ -69,7 +70,7 @@ jobs:
         with:
           image: ${{ steps.builder-image.outputs.image }}
           tags: ${{ steps.builder-image.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
+          registry: ghcr.io/soniasandler
   
   extension-image:
     name: Build and publish extension OCI image
@@ -114,4 +115,4 @@ jobs:
         with:
           image: ${{ steps.extension-image.outputs.image }}
           tags: ${{ steps.extension-image.outputs.tags }}
-          registry: ghcr.io/${{ github.repository_owner }}
+          registry: ghcr.io/soniasandler
