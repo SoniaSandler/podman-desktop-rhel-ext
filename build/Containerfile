@@ -19,11 +19,8 @@ FROM ghcr.io/soniasandler/podman-desktop-rhel-ext-builder:next AS builder
 
 COPY . .
 
-
 RUN pnpm --frozen-lockfile install
-USER root
 RUN pnpm build
-USER default
 
 RUN echo "node-linker=hoisted" >> /opt/app-root/src/dist/.npmrc
 RUN eval 'dep_version() { pnpm list -P $1 --json --depth 0 |jq -r ".[0].dependencies.\"$1\".version"; };' && \
