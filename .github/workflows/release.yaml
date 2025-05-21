@@ -121,6 +121,7 @@ jobs:
       - uses: anchore/sbom-action@v0
         with:
           path: ./
+          format: cyclonedx-json
   
   # builder-image:
   #   name: Build and publish builder OCI image
