@@ -121,7 +121,15 @@ jobs:
       - uses: anchore/sbom-action@v0
         with:
           path: ./
-          format: cyclonedx-json
+          output-file: ./podman-desktop-SBOM.spdx.json
+          artifact-name: podman-desktop-SBOM.spdx.json
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: podman-desktop-SBOM.spdx.json
+          tag: ${{ needs.tag.outputs.githubTag }}
   
   # builder-image:
   #   name: Build and publish builder OCI image
