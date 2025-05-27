@@ -34,6 +34,7 @@ on:
         default: main
 env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  RELEASE_TAG: v${{ inputs.version }}
 
 jobs:
   tag:
@@ -117,7 +118,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: v${{ inputs.version }}
+          ref: ${{ env.RELEASE_TAG }}
 
       - name: Generate sbom file
         uses: anchore/sbom-action@v0
@@ -131,7 +132,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./podman-desktop-sbom.spdx.json
-          tag: v${{ inputs.version }}
+          tag: ${{ env.RELEASE_TAG }}
 
   
   # builder-image:
